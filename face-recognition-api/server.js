@@ -23,121 +23,41 @@ const db = knex({
     }
 });
 
+const register = require("./controllers/register.js");
+const signin = require("./controllers/signin.js");
+const profile = require("./controllers/profile.js");
+const image = require("./controllers/image.js");
 
-
-// starter database
-const database = {
-    users: [
-        {
-            id: "123",
-            name: "john",
-            email: "john@gmail.com",
-            password: "cookies",
-            "entries": 0,
-            joined: new Date(),
-        },
-        {
-            id: "124",
-            name: "sally",
-            email: "sally@gmail.com",
-            password: "bananas",
-            entries: 0,
-            joined: new Date(),
-        }
-    ]
-}
 
 app.get("/", (req, res) => {
     res.send("success");
 })
 
 app.post("/signin", (req, res) => {
-
-    db.select('email', 'hash').from('login')
-        .where('email', "=", req.body.email)
-        .then(data => {
-            // first we compare out hash from our login table, it gives true if valid
-            const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
-            if (isValid) {
-                console.log(Boolean(data.length));
-                // if the password is correct we are going to select the userdata from the user table
-                db.select("*").from("users")
-                    .where("email", "=", req.body.email)
-                    .then(user => {
-                        // user[0] because it is an array of objects
-                        res.json(user[0])
-                    })
-                    .catch(err => res.status(400).json("unabe to get user"))
-            } else {
-                // if the password is not correct --->FALSE
-                res.status(400).json("wrong credentials")
-                console.log("false user")
-            }
-        })
-        .catch(err => res.status(400).json("wrong credentials"))
+    // we must inject whatever dependencies .handlerRegister() function needs 
+    // req,res,db are the needed dependencies
+    signin.handleSignin(req, res, bcrypt, db)
 })
 
 
 
 app.post("/register", (req, res) => {
-    const { email, name, password } = req.body;
-    const hash = bcrypt.hashSync(password, 10);
-
-    db.transaction(trx => {
-        trx.insert({
-            hash: hash,
-            email: email,
-        }).into("login")
-            .returning("email")
-            .then(loginEmail => {
-                return trx("users").insert({
-                    email: loginEmail[0],
-                    name: name,
-                    joined: new Date()
-                }).returning("*")
-                    .then(user => {
-                        res.json(user[0])
-                    })
-            })
-            .then(trx.commit)
-            .catch(trx.rollback)
-
-    })
-        .catch(err => {
-            res.status(400).json("unable to join")
-        })
-
-
-
+    // we must inject whatever dependencies .handlerRegister() function needs 
+    // req,res,db,bcrypt are the needed dependencies
+    register.handleRegister(req, res, db, bcrypt)
 })
 
 
 app.get("/profile/:id", (req, res) => {
-    const { id } = req.params;
-    db.select("*").from("users").where({ id: id })
-        .then(user => {
-            if (user.length) {
-                res.json(user[0])
-            } else {
-                res.status(400).json("User Not Found")
-            }
-        })
-        .catch(err => {
-            res.status(400).json("error getting user")
-        })
+    // we must inject whatever dependencies .handlerRegister() function needs 
+    // req,res,db are the needed dependencies
+    profile.handleProfile(req, res, db)
 })
 
 app.put("/image", (req, res) => {
-    const { id } = req.body;
-    // we are going to increment the entries by 1 for the id that we received from the body
-    // where("id","=",id) this is the syntax of sql 
-    db("users").where("id", "=", id)
-        .increment("entries", 1)
-        .returning("entries")
-        .then(entries => res.json(entries[0]))
-        .catch(err => {
-            res.json("unable to get entries").status(400);
-        })
+    // we must inject whatever dependencies .handlerRegister() function needs 
+    // req,res,db are the needed dependencies
+    image.handleImage(req, res, db)
 })
 
 
