@@ -25,32 +25,39 @@ const particlesOptions = {
 
 
 
+
+
 const app = new Clarifai.App({
   apiKey: "d571468358fb4c82a8da41ff41100d1e"
 })
 
+
+// this is out initial state that we use to reset our state each time the user sign out
+const initialState = {
+  input: " ",
+  imageURL: "",
+  box: "",
+  route: "signin",
+  // we are creating this state to manipulate the navigation bar according to the status of the routes
+  isSignedIn: false,
+  user: {
+    id: "",
+    name: "",
+    email: "",
+    entries: 0,
+    joined: "",
+  }
+}
+
+
 class App extends Component {
   constructor() {
     super()
-    this.state = {
-      input: " ",
-      imageURL: "",
-      box: "",
-      route: "signin",
-      // we are creating this state to manipulate the navigation bar according to the status of the routes
-      isSignedIn: false,
-      user: {
-        id: "",
-        name: "",
-        email: "",
-        entries: 0,
-        joined: "",
-      }
-    }
+    this.state = initialState;
   }
 
   // updating user profile
-
+  // data is the data of the user recieved from the database
   loadUser = (data) => {
     this.setState({
       user: {
@@ -90,6 +97,7 @@ class App extends Component {
 
   onPictureSubmit = (event) => {
     this.setState({ imageURL: this.state.input })
+
     app.models
       .predict(
         Clarifai.FACE_DETECT_MODEL,
@@ -110,6 +118,9 @@ class App extends Component {
             .then(count => {
               this.setState(Object.assign(this.state.user, { entries: count }))
             })
+            // catching any error coming from our fetch response
+            // quick way to catch error same as  .catch(err=>console.log(err))
+            .catch(console.log);
         }
         this.displayFace(this.calculateFaceLoaction(response.outputs[0].data.regions[0].region_info.bounding_box))
       })
@@ -119,7 +130,8 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === "signout") {
-      this.setState({ isSignedIn: false })
+      // we reset our state to the initialState each time the user sign out 
+      this.setState(initialState);
     } else if (route === "home") {
       this.setState({ isSignedIn: true })
     }
