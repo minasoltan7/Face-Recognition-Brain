@@ -6,7 +6,6 @@ import Rank from "./components/Rank/Rank";
 import Particles from 'react-particles-js';
 import "tachyons";
 import "./App.css";
-import Clarifai from "clarifai";
 import FaceRecognition from "./components/FaceRecogintion/FaceRecognition";
 import SignIn from "./components/Signin/Signin";
 import Register from "./components/Register/Register";
@@ -27,9 +26,7 @@ const particlesOptions = {
 
 
 
-const app = new Clarifai.App({
-  apiKey: "d571468358fb4c82a8da41ff41100d1e"
-})
+
 
 
 // this is out initial state that we use to reset our state each time the user sign out
@@ -79,7 +76,6 @@ class App extends Component {
     const image = document.getElementById("inputImage");
     const width = Number(image.width);
     const height = Number(image.height);
-    console.log(data)
 
     return {
       leftCol: data.left_col * width,
@@ -97,15 +93,14 @@ class App extends Component {
 
   onPictureSubmit = (event) => {
     this.setState({ imageURL: this.state.input })
-
-    app.models
-      .predict(
-        Clarifai.FACE_DETECT_MODEL,
-        this.state.input)
-      // this is the boundry_box
-      // We are changing the empty state of the box with the new boundries calculated from the calculateFaceLocation function
-      // We are are giving the calculateFaceLoaction function the coordinates given from the clarifay response
-      // the response of the coordinates of the boundries given from Clarify function is not absolute so we are calculating the right coordiates to give to the CSS as Styles in absolute coordinate
+    fetch("http://localhost:4000/imageURL", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    })
+      .then(response => response.json())
       .then(response => {
         if (response) {
           fetch("http://localhost:4000/image", {
@@ -141,7 +136,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="App" >
         <Particles className="particles" params={particlesOptions} />
         <Navigation onRouteChange={this.onRouteChange} isSignedIn={this.state.isSignedIn} route={this.state.route} />
         {(this.state.route === "Register") ?

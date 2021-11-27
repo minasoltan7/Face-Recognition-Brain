@@ -14,12 +14,10 @@ class SignIn extends React.Component {
 
     onEmailChange = (event) => {
         this.setState({ signInEmail: event.target.value })
-        console.log(event.target.value);
     }
 
     onPasswordChange = (event) => {
         this.setState({ signInPassword: event.target.value })
-        console.log(event.target.value);
     }
 
     onSubmitButton = (event) => {
@@ -38,7 +36,7 @@ class SignIn extends React.Component {
         },
             // we need to transform the JSON send from the backend to javascript so we use .json() built in function in javascript
         ).then(res => res.json())
-        // we get all user info from the server side and then update our "user STATE" 
+            // we get all user info from the server side and then update our "user STATE" 
             .then(user => {
                 // does the user exist? Did we receive a user with a property of id? If it is true it will sign in
                 if (user.id) {

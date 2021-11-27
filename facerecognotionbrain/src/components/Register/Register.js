@@ -39,7 +39,8 @@ class Register extends React.Component {
             })
         }).then(res => res.json())
             .then(user => {
-                if (user) {
+                // does the user exist? Did we receive a user with a property of id? If it is true it will sign in
+                if (user.id) {
                     this.props.loadUser(user);
                     this.props.onRouteChange("home");
                 } else {
