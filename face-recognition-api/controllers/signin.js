@@ -1,15 +1,19 @@
-const handleSignin = (req, res, bcrypt, db) => {
 
+const handleSignin = (req, res, bcrypt, db) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        res.status(400).json("incorrect form submission")
+    }
     db.select('email', 'hash').from('login')
-        .where('email', "=", req.body.email)
+        .where('email', "=", email)
         .then(data => {
             // first we compare out hash from our login table, it gives true if valid
-            const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+            const isValid = bcrypt.compareSync(password, data[0].hash);
             if (isValid) {
                 console.log(Boolean(data.length));
                 // if the password is correct we are going to select the userdata from the user table
                 db.select("*").from("users")
-                    .where("email", "=", req.body.email)
+                    .where("email", "=", email)
                     .then(user => {
                         // user[0] because it is an array of objects
                         res.json(user[0])

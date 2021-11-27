@@ -1,5 +1,9 @@
 const handleRegister = (req, res, db, bcrypt) => {
     const { email, name, password } = req.body;
+    if (!email || !name || !password) {
+        // we are using "return" to exit the function and not storing irrelevant data
+        return res.status(400).json("incorrect submit form")
+    }
     const hash = bcrypt.hashSync(password, 10);
 
     db.transaction(trx => {

@@ -60,6 +60,11 @@ app.put("/image", (req, res) => {
     image.handleImage(req, res, db)
 })
 
+app.post("/imageURL", (req, res) => {
+    // we must inject whatever dependencies .handlerRegister() function needs 
+    // req,res are the needed dependencies
+    image.handleAPIcall(req, res);
+})
 
 app.listen(4000, () => {
     console.log("App is running on Port 4000");
