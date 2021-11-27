@@ -1,3 +1,4 @@
+// ES6 is not supported for node.js so we must use the older way to import and export modules
 const Clarifai = require("clarifai");
 
 const app = new Clarifai.App({
@@ -30,6 +31,8 @@ const handleImage = (req, res, db) => {
         })
 }
 
+
+// ES6 is not supported yet for node.js so we must use the older way to import and export modules
 module.exports = {
     handleImage: handleImage,
     handleAPIcall: handleAPIcall

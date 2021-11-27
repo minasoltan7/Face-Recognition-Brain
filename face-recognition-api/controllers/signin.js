@@ -28,7 +28,7 @@ const handleSignin = (req, res, bcrypt, db) => {
         .catch(err => res.status(400).json("wrong credentials"))
 }
 
-
+// ES6 is not supported yet for node.js so we must use the older way to import and export modules
 module.exports = {
     handleSignin: handleSignin
 }

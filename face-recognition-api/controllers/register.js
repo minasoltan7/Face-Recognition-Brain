@@ -34,6 +34,7 @@ const handleRegister = (req, res, db, bcrypt) => {
 
 }
 
+// ES6 is not supported yet for node.js so we must use the older way to import and export modules
 module.exports = {
     handleRegister: handleRegister
 }

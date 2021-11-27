@@ -13,7 +13,7 @@ const handleProfile = (req, res, db) => {
         })
 }
 
-
+// ES6 is not supported yet for node.js so we must use the older way to import and export modules
 module.exports = {
     handleProfile: handleProfile
 }
