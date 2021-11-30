@@ -30,7 +30,7 @@ const image = require("./controllers/image.js");
 
 
 app.get("/", (req, res) => {
-    res.send("success");
+    res.send("It is working");
 })
 
 app.post("/signin", (req, res) => {
@@ -66,7 +66,7 @@ app.post("/imageURL", (req, res) => {
     image.handleAPIcall(req, res);
 })
 
-app.listen(4000, () => {
-    console.log("App is running on Port 4000");
+app.listen(process.env.PORT || 4000, () => {
+    console.log(`App is running on Port ${process.env.PORT}`);
 }
 )
