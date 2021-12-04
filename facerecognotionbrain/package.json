@@ -2,6 +2,9 @@
   "name": "facerecognotionbrain",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "14.16.0"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
@@ -12,8 +15,12 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-parallax-tilt": "^1.5.4",
+    "react-particles-js": "^3.6.0",
     "react-scripts": "4.0.3",
+    "react-tsparticles": "^1.37.5",
+    "serve": "^13.0.2",
     "tachyons": "^4.12.0",
+    "tsparticles": "^1.37.5",
     "web-vitals": "^1.1.1"
   },
   "scripts": {

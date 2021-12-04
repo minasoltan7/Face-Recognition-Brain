@@ -14,12 +14,10 @@ const db = knex({
     // Because we are using Postgres we chose "pg" as a client
     client: 'pg',
     connection: {
-        // our localhost right nowbefore we deploy into an online plaform
-        host: '127.0.0.1',
-        // We must add the user name whith who we installed Postgres and its password in order for it to work
-        user: 'postgres',
-        password: 'test',
-        database: 'smart-brain'
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
+        }
     }
 });
 

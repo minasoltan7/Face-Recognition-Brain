@@ -3,26 +3,88 @@ import Navigation from "./components/Navigation/Navigation";
 import Logo from "./components/Logo/Logo";
 import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
 import Rank from "./components/Rank/Rank";
-import Particles from 'react-particles-js';
+import Particles from "react-particles-js";
 import "tachyons";
 import "./App.css";
 import FaceRecognition from "./components/FaceRecogintion/FaceRecognition";
 import SignIn from "./components/Signin/Signin";
 import Register from "./components/Register/Register";
+import { ParticlesOptions } from "tsparticles/Options/Classes/Particles/ParticlesOptions";
 
+
+// options of Particles mode
 const particlesOptions = {
+  fpsLimit: 60,
+  interactivity: {
+    events: {
+      onClick: {
+        enable: true,
+        mode: "push",
+      },
+      onHover: {
+        enable: true,
+        mode: "repulse",
+      },
+      resize: true,
+    },
+    modes: {
+      bubble: {
+        distance: 400,
+        duration: 2,
+        opacity: 0.8,
+        size: 40,
+      },
+      push: {
+        quantity: 4,
+      },
+      repulse: {
+        distance: 200,
+        duration: 0.4,
+      },
+    },
+  },
   particles: {
+    color: {
+      value: "#ffffff",
+    },
+    links: {
+      color: "#ffffff",
+      distance: 150,
+      enable: true,
+      opacity: 0.5,
+      width: 1,
+    },
+    collisions: {
+      enable: true,
+    },
+    move: {
+      direction: "none",
+      enable: true,
+      outMode: "bounce",
+      random: false,
+      speed: 6,
+      straight: false,
+    },
     number: {
-      value: 150,
       density: {
         enable: true,
-        value_area: 800
-      }
-    }
-  }
-};
-
-
+        value_area:900,
+      },
+      value: 80,
+    },
+    opacity: {
+      value: 0.5,
+    },
+    shape: {
+      type: "circle",
+    },
+    size: {
+      random: true,
+      value: 5,
+    },
+  },
+  detectRetina: true,
+}
 
 
 
@@ -93,7 +155,7 @@ class App extends Component {
 
   onPictureSubmit = (event) => {
     this.setState({ imageURL: this.state.input })
-    fetch("http://localhost:4000/imageURL", {
+    fetch("https://whispering-fjord-72948.herokuapp.com/imageURL", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -103,7 +165,7 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         if (response) {
-          fetch("http://localhost:4000/image", {
+          fetch("https://whispering-fjord-72948.herokuapp.com/image", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -134,31 +196,46 @@ class App extends Component {
   }
 
 
+
+
+
   render() {
+
+    // Initializing particles  
+    const particlesInit = (main) => {
+      console.log(main);
+    };
+
+    const particlesLoaded = (container) => {
+      console.log(container);
+    };
+
     return (
-      <div className="App" >
-        <Particles className="particles" params={particlesOptions} />
+
+      <div div className="App" >
+        <Particles id="tsparticles" init={particlesInit} loaded={particlesLoaded} className="particles" params={particlesOptions} />
         <Navigation onRouteChange={this.onRouteChange} isSignedIn={this.state.isSignedIn} route={this.state.route} />
-        {(this.state.route === "Register") ?
-          <div>
-            <Logo />
-            <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
-          </div>
-          :
-          (this.state.route === "home") ?
+        {
+          (this.state.route === "Register") ?
             <div>
               <Logo />
-              <Rank name={this.state.user.name} entries={this.state.user.entries} />
-              <ImageLinkForm onInputChange={this.onInputChange} onPictureSubmit={this.onPictureSubmit} />
-              <FaceRecognition box={this.state.box} imageURL={this.state.imageURL} />
+              <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
             </div>
             :
-            <div>
-              <Logo />
-              <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
-            </div>
+            (this.state.route === "home") ?
+              <div>
+                <Logo />
+                <Rank name={this.state.user.name} entries={this.state.user.entries} />
+                <ImageLinkForm onInputChange={this.onInputChange} onPictureSubmit={this.onPictureSubmit} />
+                <FaceRecognition box={this.state.box} imageURL={this.state.imageURL} />
+              </div>
+              :
+              <div>
+                <Logo />
+                <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+              </div>
         }
-      </div>
+      </div >
     )
 
   }
